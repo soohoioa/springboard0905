@@ -1,5 +1,6 @@
 package com.project.board0905.domain.user.service;
 
+import com.project.board0905.common.error.BusinessException;
 import com.project.board0905.domain.user.dto.UserCreateRequest;
 import com.project.board0905.domain.user.dto.UserResponse;
 import com.project.board0905.domain.user.dto.UserUpdateRequest;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.project.board0905.domain.user.error.UserErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,10 +29,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse create(UserCreateRequest userCreateRequest) {
         if (userRepository.existsByUsername(userCreateRequest.getUsername())) {
-            throw new IllegalArgumentException("이미 사용 중인 사용자명입니다.");
+            throw new BusinessException(USERNAME_DUPLICATE);
         }
         if (userRepository.existsByEmail(userCreateRequest.getEmail())) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            throw new BusinessException(EMAIL_DUPLICATE);
         }
 
         User user = User.builder()
@@ -46,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse get(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
         return UserResponse.of(user);
     }
 
@@ -59,19 +62,19 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse update(Long id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
 
         if (userUpdateRequest.getUsername() != null && !userUpdateRequest.getUsername().isBlank()) {
             // 본인 이외 중복 체크
             if (userRepository.existsByUsername(userUpdateRequest.getUsername()) && !userUpdateRequest.getUsername().equals(user.getUsername())) {
-                throw new IllegalArgumentException("이미 사용 중인 사용자명입니다.");
+                throw new BusinessException(USERNAME_DUPLICATE);
             }
             user.changeProfile(userUpdateRequest.getUsername(), user.getEmail());
         }
 
         if (userUpdateRequest.getEmail() != null && !userUpdateRequest.getEmail().isBlank()) {
             if (userRepository.existsByEmail(userUpdateRequest.getEmail()) && !userUpdateRequest.getEmail().equals(user.getEmail())) {
-                throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+                throw new BusinessException(EMAIL_DUPLICATE);
             }
             user.changeProfile(user.getUsername(), userUpdateRequest.getEmail());
         }
@@ -95,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void softDelete(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
         user.softDelete();
     }
 }
