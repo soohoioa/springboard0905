@@ -19,15 +19,15 @@ public class UserResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static UserResponse of(User u) {
+    public static UserResponse of(User user) {
         return UserResponse.builder()
-                .id(u.getId())
-                .username(u.getUsername())
-                .email(u.getEmail())
-                .role(u.getRole())
-                .status(u.getStatus())
-                .createdAt(u.getCreatedAt())
-                .updatedAt(u.getUpdatedAt())
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 }
