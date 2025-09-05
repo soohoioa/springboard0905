@@ -1,6 +1,7 @@
 package com.project.board0905.common.error;
 
 import com.project.board0905.common.util.LogUtils;
+import com.project.board0905.common.web.CommonApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -148,5 +149,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAny(Exception ex, HttpServletRequest req) {
         return build(ErrorCode.INTERNAL_ERROR, ex.getMessage(), req, null, ex);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<CommonApiResponse<Void>> handleBusiness(BusinessException ex) {
+        BaseErrorCode ec = ex.getErrorCode();
+        return ResponseEntity.status(ec.getStatus())
+                .body(CommonApiResponse.error(ec, ex.getMessage())); // ← 새 오버로드 사용
     }
 }

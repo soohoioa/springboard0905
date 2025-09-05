@@ -89,4 +89,24 @@ public class CommonApiResponse<T> {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+    public static <T> CommonApiResponse<T> error(String code, String message, int status) {
+        return CommonApiResponse.<T>builder()
+                .success(false)
+                .code(code)
+                .message(message)
+                .status(status)
+                .data(null)
+                .build();
+    }
+
+    public static <T> CommonApiResponse<T> error(BaseErrorCode ec) {
+        return error(ec.getCode(), ec.getDefaultMessage(), ec.getStatus().value());
+    }
+
+    public static <T> CommonApiResponse<T> error(BaseErrorCode ec, String overrideMessage) {
+        String msg = (overrideMessage == null || overrideMessage.isBlank())
+                ? ec.getDefaultMessage() : overrideMessage;
+        return error(ec.getCode(), msg, ec.getStatus().value());
+    }
 }
