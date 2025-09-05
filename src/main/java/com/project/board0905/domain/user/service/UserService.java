@@ -7,9 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-    UserResponse create(UserCreateRequest req);
+    UserResponse create(UserCreateRequest userCreateRequest);
     UserResponse get(Long id);
     Page<UserResponse> list(Pageable pageable);
-    UserResponse update(Long id, UserUpdateRequest req);
+    UserResponse update(Long id, UserUpdateRequest userUpdateRequest);
     void softDelete(Long id); // status = DELETED
 }

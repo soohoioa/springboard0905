@@ -24,18 +24,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse create(UserCreateRequest req) {
-        if (userRepository.existsByUsername(req.getUsername())) {
+    public UserResponse create(UserCreateRequest userCreateRequest) {
+        if (userRepository.existsByUsername(userCreateRequest.getUsername())) {
             throw new IllegalArgumentException("이미 사용 중인 사용자명입니다.");
         }
-        if (userRepository.existsByEmail(req.getEmail())) {
+        if (userRepository.existsByEmail(userCreateRequest.getEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
 
         User user = User.builder()
-                .username(req.getUsername())
-                .email(req.getEmail())
-                .password(passwordEncoder.encode(req.getPassword()))
+                .username(userCreateRequest.getUsername())
+                .email(userCreateRequest.getEmail())
+                .password(passwordEncoder.encode(userCreateRequest.getPassword()))
                 .role(Role.USER)
                 .status(UserStatus.ACTIVE)
                 .build();
@@ -57,35 +57,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse update(Long id, UserUpdateRequest req) {
+    public UserResponse update(Long id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (req.getUsername() != null && !req.getUsername().isBlank()) {
+        if (userUpdateRequest.getUsername() != null && !userUpdateRequest.getUsername().isBlank()) {
             // 본인 이외 중복 체크
-            if (userRepository.existsByUsername(req.getUsername()) && !req.getUsername().equals(user.getUsername())) {
+            if (userRepository.existsByUsername(userUpdateRequest.getUsername()) && !userUpdateRequest.getUsername().equals(user.getUsername())) {
                 throw new IllegalArgumentException("이미 사용 중인 사용자명입니다.");
             }
-            user.changeProfile(req.getUsername(), user.getEmail());
+            user.changeProfile(userUpdateRequest.getUsername(), user.getEmail());
         }
 
-        if (req.getEmail() != null && !req.getEmail().isBlank()) {
-            if (userRepository.existsByEmail(req.getEmail()) && !req.getEmail().equals(user.getEmail())) {
+        if (userUpdateRequest.getEmail() != null && !userUpdateRequest.getEmail().isBlank()) {
+            if (userRepository.existsByEmail(userUpdateRequest.getEmail()) && !userUpdateRequest.getEmail().equals(user.getEmail())) {
                 throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
             }
-            user.changeProfile(user.getUsername(), req.getEmail());
+            user.changeProfile(user.getUsername(), userUpdateRequest.getEmail());
         }
 
-        if (req.getPassword() != null && !req.getPassword().isBlank()) {
-            user.changePassword(passwordEncoder.encode(req.getPassword()));
+        if (userUpdateRequest.getPassword() != null && !userUpdateRequest.getPassword().isBlank()) {
+            user.changePassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
         }
 
-        if (req.getRole() != null) {
-            user.changeRole(req.getRole());
+        if (userUpdateRequest.getRole() != null) {
+            user.changeRole(userUpdateRequest.getRole());
         }
 
-        if (req.getStatus() != null) {
-            user.changeStatus(req.getStatus());
+        if (userUpdateRequest.getStatus() != null) {
+            user.changeStatus(userUpdateRequest.getStatus());
         }
 
         return UserResponse.of(user);

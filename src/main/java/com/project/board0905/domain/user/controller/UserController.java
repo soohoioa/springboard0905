@@ -24,9 +24,9 @@ public class UserController {
     // 생성
     @PostMapping
     public ResponseEntity<CommonApiResponse<UserResponse>> create(
-            @Valid @RequestBody UserCreateRequest req
+            @Valid @RequestBody UserCreateRequest userCreateRequest
     ) {
-        UserResponse res = userService.create(req);
+        UserResponse res = userService.create(userCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonApiResponse.ok(res));
     }
@@ -34,8 +34,8 @@ public class UserController {
     // 단건 조회
     @GetMapping("/{id}")
     public ResponseEntity<CommonApiResponse<UserResponse>> get(@PathVariable Long id) {
-        UserResponse res = userService.get(id);
-        return ResponseEntity.ok(CommonApiResponse.ok(res));
+        UserResponse response = userService.get(id);
+        return ResponseEntity.ok(CommonApiResponse.ok(response));
     }
 
     // 목록 (페이지)
@@ -51,10 +51,10 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<CommonApiResponse<UserResponse>> update(
             @PathVariable Long id,
-            @Valid @RequestBody UserUpdateRequest req
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest
     ) {
-        UserResponse res = userService.update(id, req);
-        return ResponseEntity.ok(CommonApiResponse.ok(res));
+        UserResponse response = userService.update(id, userUpdateRequest);
+        return ResponseEntity.ok(CommonApiResponse.ok(response));
     }
 
     // 삭제 (소프트 삭제: status=DELETED)
