@@ -1,5 +1,6 @@
 package com.project.board0905.domain.user.service;
 
+import com.project.board0905.domain.user.dto.PasswordChangeRequest;
 import com.project.board0905.domain.user.dto.UserCreateRequest;
 import com.project.board0905.domain.user.dto.UserResponse;
 import com.project.board0905.domain.user.dto.UserUpdateRequest;
@@ -12,4 +13,8 @@ public interface UserService {
     Page<UserResponse> list(Pageable pageable);
     UserResponse update(Long id, UserUpdateRequest userUpdateRequest);
     void softDelete(Long id); // status = DELETED
+
+    UserResponse myPage(Long userId);
+    UserResponse updateMe(Long userId, UserUpdateRequest userUpdateRequest);
+    void changePassword(Long userId, PasswordChangeRequest passwordChangeRequest);
 }

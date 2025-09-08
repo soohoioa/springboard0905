@@ -1,6 +1,7 @@
 package com.project.board0905.domain.user.service;
 
 import com.project.board0905.common.error.BusinessException;
+import com.project.board0905.domain.user.dto.PasswordChangeRequest;
 import com.project.board0905.domain.user.dto.UserCreateRequest;
 import com.project.board0905.domain.user.dto.UserResponse;
 import com.project.board0905.domain.user.dto.UserUpdateRequest;
@@ -100,5 +101,53 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
         user.softDelete();
+    }
+
+    @Override
+    public UserResponse myPage(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+        return UserResponse.of(user);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateMe(Long userId, UserUpdateRequest userUpdateRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+
+        if (userUpdateRequest.getUsername() != null && !userUpdateRequest.getUsername().isBlank()) {
+            if (!userUpdateRequest.getUsername().equals(user.getUsername())
+                    && userRepository.existsByUsername(userUpdateRequest.getUsername())) {
+                throw new BusinessException(USERNAME_DUPLICATE);
+            }
+            user.changeProfile(userUpdateRequest.getUsername(), user.getEmail());
+        }
+
+        if (userUpdateRequest.getEmail() != null && !userUpdateRequest.getEmail().isBlank()) {
+            if (!userUpdateRequest.getEmail().equals(user.getEmail())
+                    && userRepository.existsByEmail(userUpdateRequest.getEmail())) {
+                throw new BusinessException(EMAIL_DUPLICATE);
+            }
+            user.changeProfile(user.getUsername(), userUpdateRequest.getEmail());
+        }
+
+        return UserResponse.of(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long userId, PasswordChangeRequest passwordChangeRequest) {
+        if (!passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getNewPasswordConfirm())) {
+            throw new BusinessException(PASSWORD_CONFIRM_MISMATCH);
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(passwordChangeRequest.getCurrentPassword(), user.getPassword())) {
+            throw new BusinessException(PASSWORD_INCORRECT);
+        }
+        user.changePassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+
     }
 }
