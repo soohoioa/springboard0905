@@ -5,6 +5,7 @@ import com.project.board0905.domain.board.dto.BoardCreateRequest;
 import com.project.board0905.domain.board.dto.BoardResponse;
 import com.project.board0905.domain.board.dto.BoardUpdateRequest;
 import com.project.board0905.domain.board.service.BoardService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/boards")
+@Tag(name = "Board", description = "게시글 API")
 public class BoardController {
 
     private final BoardService boardService;

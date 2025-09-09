@@ -5,6 +5,7 @@ import com.project.board0905.domain.category.dto.CategoryCreateRequest;
 import com.project.board0905.domain.category.dto.CategoryResponse;
 import com.project.board0905.domain.category.dto.CategoryUpdateRequest;
 import com.project.board0905.domain.category.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/categories")
+@Tag(name = "Category", description = "카테고리 API")
 public class CategoryController {
 
     private final CategoryService categoryService;

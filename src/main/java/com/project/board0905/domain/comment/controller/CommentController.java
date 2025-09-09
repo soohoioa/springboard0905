@@ -5,6 +5,7 @@ import com.project.board0905.domain.comment.dto.CommentCreateRequest;
 import com.project.board0905.domain.comment.dto.CommentResponse;
 import com.project.board0905.domain.comment.dto.CommentUpdateRequest;
 import com.project.board0905.domain.comment.service.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/boards/{boardId}/comments")
+@Tag(name = "Comment", description = "답글 API")
 public class CommentController {
 
     private final CommentService commentService;

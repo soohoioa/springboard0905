@@ -4,6 +4,7 @@ import com.project.board0905.common.web.CommonApiResponse;
 import com.project.board0905.domain.like.dto.LikeResponse;
 import com.project.board0905.domain.like.dto.LikeToggleResponse;
 import com.project.board0905.domain.like.service.LikeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/boards/{boardId}/likes")
+@Tag(name = "Like", description = "좋아요 API")
 public class LikeController {
 
     private final LikeService likeService;
