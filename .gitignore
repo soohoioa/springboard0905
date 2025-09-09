@@ -40,3 +40,6 @@ out/
 .DS_Store
 
 application.yml
+단일모듈.md
+
+/docs/
